@@ -1,0 +1,106 @@
+{"namespace":"rwgan",
+"x_dim": 2048,
+"y_dim": 50,
+"lmbda": 10,
+"loss_name":"wgan_loss",
+"placeholder_input": ["a", "x"],
+"placeholders":[{"name": "x", "shape": [null, 2048], "dtype": "float32"},
+                {"name": "a", "shape": [null, 85], "dtype": "float32"},
+                {"name": "y", "shape": [null, 50], "dtype": "float32"},
+                {"name": "y_pred", "shape": [null, 50], "dtype": "float32"},
+                {"name": "a_pred", "shape": [null, 85], "dtype": "float32"},
+                {"name": "a_dict", "shape": [null, 85], "dtype": "float32"},
+                {"name": "z", "shape": [null, 85],   "dtype": "float32"}],
+
+"gan":{"epochs":500,
+       "batch": 64,
+       "c_beta": 0.01,
+       "r_beta": 0.01},
+
+"generator":{"placeholder_input": ["a", "z"],
+             "placeholder_call": ["a", "z"],
+             "architecture":
+                [{"name": "g_fc1", "initializer": {"name":"xavier"}, "shape":[170, 4096]},
+                 {"name": "g_bc1", "initializer": {"name":"zeros"}, "shape":[4096]},
+                 {"name": "g_fc2", "initializer": {"name":"xavier"}, "shape":[4096, 2048]},
+                 {"name": "g_bc2", "initializer": {"name":"zeros"}, "shape":[2048]}],
+             "operators": 
+                [{"op":"concat", "inputs": ["a", "z"], "axis":-1},
+                 {"op":"matmul", "input": "layers/g_fc1"},
+                 {"op":"bias_add", "input": "layers/g_bc1"},
+                 {"op": "activation", "type": "leaky_relu"},
+                 {"op":"matmul", "input": "layers/g_fc2"},
+                 {"op":"bias_add", "input": "layers/g_bc2"},
+                 {"op": "activation", "type": "relu"}],
+
+             "optimizer": {"name":"adam",
+                           "lr": 1e-3}},
+
+"discriminator":{ "placeholder_input": ["x", "a", "generator/a"],
+                  "placeholder_call": ["x", "a"],
+                  "architecture":
+                    [{"name": "d_fc1", "initializer": {"name":"xavier"}, "shape":[2133, 4096]},
+                     {"name": "d_bc1", "initializer": {"name":"zeros"}, "shape":[4096]},
+                     {"name": "d_fc2", "initializer": {"name":"xavier"}, "shape":[4096, 1]},
+                     {"name": "d_bc2", "initializer": {"name":"zeros"}, "shape":[1]}],
+                  
+                  "operators": 
+                    [{"op":"concat", "inputs": ["x", "a"], "axis":-1},
+                     {"op":"matmul", "input": "layers/d_fc1"},
+                     {"op":"bias_add", "input": "layers/d_bc1"},
+                    
+                     {"op": "activation", "type": "leaky_relu"},
+
+                     {"op":"matmul", "input": "layers/d_fc2"},
+                     {"op":"bias_add", "input": "layers/d_bc2"}],
+                  
+                  "optimizer": 
+                    {"name":"adam",
+                     "lr": 1e-3}
+                 },
+
+"classifier":{ "placeholder_input": ["x","y"],
+               "placeholder_call": ["x"],
+               "epochs": 30,
+               "batch": 2048,
+               "y_dim": 50,
+               "beta":0.01,
+               "architecture":
+              [{"name": "c_fc1", "initializer": {"name":"truncated", "params":{"stddev": 0.01 }}, "shape":[2048, 50]},
+                     {"name": "c_bc1", "initializer": {"name":"constant", "params": {"value": 0.9999}}, "shape":[50]}],
+                  
+                  "operators": 
+                    [{"op": "placeholder", "input":"x"},
+                     {"op":"matmul", "input": "layers/c_fc1"},
+                     {"op":"bias_add", "input": "layers/c_bc1"},
+                     {"op": "activation", "type": "relu", "out": 1, "ref":"last_logit"},
+                     {"op": "activation", "type": "softmax"}],
+                  
+                  "optimizer": 
+                    {"name":"adam",
+                     "lr": 0.05}
+                 },
+"regressor":{ "placeholder_input": ["x","a"],
+              "placeholder_call": ["x"],
+               "epochs": 40,
+               "batch": 64,
+               "x_dim":2048,
+               "y_dim": 50,
+               "a_dim":85,
+               "wdecay":0.0,
+               "beta":0.01,
+               "architecture":
+                    [{"name": "r_fc1", "initializer": {"name":"xavier"}, "shape":[2048, 85]},
+                     {"name": "r_bc1", "initializer": {"name":"zeros"}, "shape":[85]}],
+                  
+                  "operators": 
+                    [{"op": "placeholder", "input":"x"},
+                     {"op":"matmul", "input": "layers/r_fc1"},
+                     {"op":"bias_add", "input": "layers/r_bc1"}],
+
+                  "optimizer": 
+                    {"name":"adam",
+                     "lr": 1e-4,
+                     "decay":1e-6}
+                 }
+}
