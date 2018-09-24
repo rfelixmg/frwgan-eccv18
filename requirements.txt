@@ -1,0 +1,14 @@
+# Name                    Version                   Build  Channel
+cudatoolkit               8.0                           3  
+cudnn                     7.0.5                 cuda8.0_0  
+h5py                      2.7.1            py35h8d53cdc_0  
+hdf5                      1.10.1               h9caa474_1  
+imageio                   2.3.0                    py35_0  
+numpy                     1.14.2           py35hdbf6ddf_1  
+pillow                    5.0.0            py35h3deb7b8_0  
+scikit-image              0.13.1           py35h14c3975_1  
+scikit-learn              0.19.1           py35hbf1f462_0  
+scipy                     1.0.1            py35hfc37229_0  
+tensorboard               1.5.1                    py35_1    conda-forge
+tensorflow                1.5.0                    py35_0    conda-forge
+tensorflow-gpu            1.4.1                         0  
