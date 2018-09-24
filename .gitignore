@@ -1,2 +1,2 @@
-./src/data/*
-./util
+src/data/*
+util
