@@ -8,7 +8,10 @@ Code for model presented on our paper accepted on European Conference on Compute
 
 ## Dependencies
 
-In order to reproduce the code, please check the `requirements.txt` file (see attach)[./requirements.txt]
+In order to reproduce the code, please check the `requirements.txt` file. Attach: ([requirements.txt](./requirements.txt)).
+
+An extra dependency for this project consist of a util package containing all peripheral functionalities.
+**Package**: [util](https://github.com/rfelixmg/util)
 
 
 ## Running:
@@ -41,6 +44,43 @@ usage: train.py [-h] [--root ROOT] [--namespace NAMESPACE]
                 [--train_gan TRAIN_GAN] [--att_type ATT_TYPE]
 
 ```
+
+## Dataset:
+
+**Download**: [dataset](https://cvml.ist.ac.at/AwA2/) 
+[https://cvml.ist.ac.at/AwA2]
+
+This dataset provides a platform to benchmark transfer-learning algorithms, in particular attribute base classification and zero-shot learning. It can act as a drop-in replacement to the original Animals with Attributes (AwA) dataset, as it has the same class structure and almost the same characteristics. In addition, in this website you will find CUB, SUN, FLO.
+
+** HDF5 file:** The current code uses a HDF5 structure to organize the dataset. You call use h5py to create the following structure:
+
+```
+Legend: (+ group: hdf5 name for "folder", - dataset hdf5 name for "matrix")
+Dataset: data.h5
+Structure:
++ test:
+++ {seen,unseen}}:
+--- {X,Y}
++++ A:
+---- {continuous, binary}
++ {train, val}:
+-- {X,Y}
+++ A:
+--- {continuous, binary}
+
+
+
+```
+```
+AttributeDictionary: knn.h5
++ {openset,openval,zsl}:
+-- data
+-- ids
+++ {class2id,id2class,id2knn,knn2id}
+--- data
+```
+
+In order to facilitate the display of the dataset you might want to use HDFView 2.9 (for linux users)
 
 
 ## License
