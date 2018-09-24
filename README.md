@@ -7,14 +7,37 @@ Code for model presented on our paper accepted on European Conference on Compute
 
 
 ## Dependencies
-	In order to reproduce the code, please check the `requirements.txt` file (see attach)[./requirements.txt]
+
+In order to reproduce the code, please check the `requirements.txt` file (see attach)[./requirements.txt]
+
 
 ## Running train:
 
 ```
-Help:
+# Help:
 python train.py --help
 
-Training:
+# Training:
 python train.py --baseroot /tmp/test/ --train_cls 1 --train_reg 1 --train_gan 1 --architecture_file ./src/bash/eccv18/awa/architecture_rwgan.json --gpu_devices "0" --gpu_memory 0.8 --save_model 0 --savepoints "[30,40,300]"
+
+# Usage for training:
+
+usage: train.py [-h] [--root ROOT] [--namespace NAMESPACE]
+                [--gpu_devices GPU_DEVICES] [--gpu_memory GPU_MEMORY]
+                [--savepoints SAVEPOINTS] [--setup SETUP]
+                [--save_model SAVE_MODEL] [--save_from SAVE_FROM]
+                [--save_every SAVE_EVERY] [--saveall SAVEALL]
+                [--dbname DBNAME] [--dataroot DATAROOT] [--datadir DATADIR]
+                [--baseroot BASEROOT] [--description DESCRIPTION]
+                [--plusinfo PLUSINFO] [--sideinfo SIDEINFO]
+                [--exp_directories EXP_DIRECTORIES] [--auxroot AUXROOT]
+                [--timestamp TIMESTAMP] [--load_model LOAD_MODEL]
+                [--checkpoint CHECKPOINT] [--checkpoints_max CHECKPOINTS_MAX]
+                [--validation_split VALIDATION_SPLIT]
+                [--metric_list METRIC_LIST]
+                [--checkpoint_metric CHECKPOINT_METRIC]
+                [--architecture_file ARCHITECTURE_FILE]
+                [--train_cls TRAIN_CLS] [--train_reg TRAIN_REG]
+                [--train_gan TRAIN_GAN] [--att_type ATT_TYPE]
+
 ```
