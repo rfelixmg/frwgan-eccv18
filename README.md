@@ -1,7 +1,7 @@
 # Multi-modal Cycle-consistent Generalized Zero-Shot Learning
 ## frwgan eccv 18
 
-(download paper)[http://openaccess.thecvf.com/content_ECCV_2018/papers/RAFAEL_FELIX_Multi-modal_Cycle-consistent_Generalized_ECCV_2018_paper.pdf]
+**Paper**: [download paper](http://openaccess.thecvf.com/content_ECCV_2018/papers/RAFAEL_FELIX_Multi-modal_Cycle-consistent_Generalized_ECCV_2018_paper.pdf)
 
 Code for model presented on our paper accepted on European Conference on Computer Vision 2018.
 
