@@ -27,21 +27,40 @@ class Print(object):
     def __init__(self):
         pass
 
-    @classmethod
+    def __call__(self, x):
+        self.print_inline(x)
+
     def print_inline(self, x):
         from sys import stdout
         stdout.write('\r{}               '.format(x))
         stdout.flush()
 
+    def print(self, x):
+        self.print_inline(x)
+
+    def next_line(self):
+        from sys import stdout
+        stdout.write('\n\r')
+        stdout.flush()
 
 class ModelObject(object):
-    def __init__(self, hparams):
+    def __init__(self, hparams={}):
         self.counter = 0
         self.__set_dict__(hparams)
-        self.printer = Print.print_inline
+        self.printer = Print()
 
     def reset_counter(self):
         self.counter = 0
+    
+    def __init_variables__(self):
+        self.sess.run(tf.local_variables_initializer())
+        self.sess.run(tf.global_variables_initializer())
+    
+    def set_session(self, sess):
+        self.sess = sess
+
+    def get_session(self, sess):
+        return self.sess
 
     def __set_dict__(self, data):
         for key, value in data.items():
@@ -50,18 +69,61 @@ class ModelObject(object):
     def get_subparam(self, tree, data):
         levels = data.split('/')
         if(len(levels) > 1):
-            return self.get_subparam(tree[levels[0]], '/'.join(levels[1:]))
+            if levels[0] in tree:
+                return self.get_subparam(tree[levels[0]], '/'.join(levels[1:]))
+            else:
+                return False
         else:
-            return tree[data]
+            if data in tree:
+                return tree[data]
+            else:
+                return False
+                
+    def label2hot(self, y, dim=False):
+        import numpy as np
+        if not dim:
+            dim = np.max(y) + 1
+        return np.eye(dim)[y].astype(np.int)
 
+    @property
+    def vars(self):
+        return [var for var in tf.global_variables() if self.namespace in var.name]
+        
     def get_param(self, data):
         return self.get_subparam(self.__dict__, data)
+
+    def contains(self, namespace):
+        return namespace in self.__dict__
+
+    def set_param(self, namespace, data):
+        levels = namespace.split('/')
+        last = len(levels)-1
+        tree = self.__dict__
+        for key, _level in enumerate(levels):
+            if _level in tree:
+                
+                if key != last:
+                    tree = tree[_level]
+                else:
+                    tree[_level] = data
+
+            else:
+                if key != last:
+                    tree[_level] = {}
+                    tree = tree[_level]
+                else:
+                    tree[_level] =data
+    
     
     def set_writer(self, root):
         import tensorflow as tf
         self.writer = tf.summary.FileWriter(root, self.sess.graph)
         self.writer.flush()
-    
+
+    def summary_dict(self, _base, data):
+        for key, value in data.items():
+            self.set_summary('{}/{}'.format(_base, key), value)
+
     def set_summary(self, tag, value, stype='summary'):
         if stype == 'summary':
             summary = tf.Summary(value=[tf.Summary.Value(tag=tag, simple_value=value)])
@@ -69,7 +131,7 @@ class ModelObject(object):
         elif stype == 'histogram':
             self.__summary_histogram__(tag, value)
         elif stype == 'text':
-            self.__summary_text__(tag, value)
+            self.__sumary__text__(tag, value)
     
     def __summary__(self, summary, merges=False):
         summaries = [tf.summary.scalar(name=key, tensor=value) for key, value in summary.items()]
@@ -77,13 +139,10 @@ class ModelObject(object):
             summaries.append(merges)
         return tf.summary.merge(summaries)
 
-    def __summary_text__(self, tag, value):
-        text_tensor = tf.make_tensor_proto(str(value), dtype=tf.string)
-        meta = tf.SummaryMetadata()
-        meta.plugin_data.plugin_name = "text"
-        summary = tf.Summary()
-        summary.value.add(tag=tag, metadata=meta, tensor=text_tensor)
-        self.writer.add_summary(summary, self.counter)
+    def __sumary__text__(self, tag, value):
+        summary_op = tf.summary.text(tag, tf.convert_to_tensor(value, dtype=tf.string))
+        text = self.sess.run([summary_op])[0]
+        self.writer.add_summary(text, self.counter)
 
     def __summary_histogram__(self, tag, values, bins=100):
         import numpy as np
@@ -175,8 +234,9 @@ class ModelObject(object):
 
     def next_batch(self, data, batch_size, shuffle=True):
         import numpy as np
-        
-        ids_, dim_x = self.list_ids(x=data[self.placeholder_input[0]], shuffle=shuffle)
+        _batch_over = data['placeholder_batch'] if 'placeholder_batch' in data else self.placeholder_input[0]
+
+        ids_, dim_x = self.list_ids(x=data[_batch_over], shuffle=shuffle)
         for batch in range(0, dim_x, batch_size):
             ii_ = ids_[batch: batch_size + batch]
             pck = (ii_, batch, dim_x)

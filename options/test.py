@@ -21,22 +21,26 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-import tensorflow as tf
-__INITIALIZERS__ = {'truncated': tf.truncated_normal_initializer,
-                    'constant': tf.constant_initializer,
-                    'zeros': tf.zeros_initializer,
-                    'xavier': tf.contrib.layers.xavier_initializer,
-                    'batch_norm': tf.layers.BatchNormalization}
+from .models import ModelsBase
+from .dtype import *
 
-__OPERATORS__ = {'matmul': tf.matmul,
-                 'bias_add': tf.nn.bias_add,
-                 'concat': tf.concat,
-                 'relu': tf.nn.relu,
-                 'softmax': tf.nn.softmax,
-                 'leaky_relu': tf.nn.leaky_relu,
-                 'sigmoid': tf.nn.sigmoid,
-                 'dropout': tf.nn.dropout}
+class TestOptions(ModelsBase):
+    def __init__(self):
+        super(TestOptions, self).__init__()
 
-__OPTIMIZERS__ = {'adam': tf.train.AdamOptimizer,
-                  'sgd': tf.train.GradientDescentOptimizer,
-                  'rms': tf.train.RMSPropOptimizer}
+    def initialize(self):
+        super(TestOptions, self).initialize()
+        self.parser.add_argument('-s', '--scores', type=str2strlist, default=False, help='Get ensemble scores')
+        self.parser.add_argument('-d', '--dropout', type=str2bool, default=False, help='Test mcmc dropout')
+        self.parser.add_argument('-o', '--output', type=str, default='/tmp/', help='Test mcmc dropout')
+
+
+__OPTION__=TestOptions
+
+if __name__ == '__main__':
+    print('-'*100)
+    print(':: Testing file: {}'.format(__file__))
+    print('-'*100)
+
+    params = __OPTION__()
+    params.parse()

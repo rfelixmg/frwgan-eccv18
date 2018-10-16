@@ -21,17 +21,27 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+import argparse
 def str2list(v):
     import re
     return list([var.replace('\'', '') for var in re.search(r'\[(.*)\]', v).group(1).split(',')])
 
+def str2strlist(v):
+    values = ''.join(''.join(v.split("[")).split("]"))
+    values = ''.join(''.join(values.split("(")).split(")"))
+    values = ','.join(values.split(', ')).split(',')
+    return list(values)
+
+def str2intlist(v):
+    values = ''.join(''.join(v.split("[")).split("]"))
+    values = ''.join(''.join(values.split("(")).split(")"))
+    values = ','.join(values.split(', ')).split(',')
+    return list([int(value) for value in values])
 
 def str2array(v, rtype=int):
-    print(v)
     import re
     import numpy as np
     return np.array([var.replace('\'', '') for var in re.search(r'\[(.*)\]', v).group(1).split(',')]).astype(rtype)
-
 
 def str2bool(v):
     if v.lower() in ('yes', 'true', 't', 'y', '1'):

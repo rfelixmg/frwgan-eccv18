@@ -36,23 +36,25 @@ class Classifier(BaseModel):
     def loss(self):
         return self.bce_loss(self.outlogit, self.y)
 
-    def __build_specs__(self):
+    def __build_specs__(self, training=True):
         self.output, out = self.__forward__(ret_all=True)
         self.outlogit = out['last_logit']
-
-        self._loss = self.loss()
-        self._update = self.update_step(self._loss)
+        self.output_test = self.__forward__(training=False)
         self.c_accuracy = tf.metrics.mean_per_class_accuracy(self.y,
                                                              self.y_pred,
                                                              self.y_dim)
+        if training:
+            self.set_loss(self.loss())
+
     def bce_loss(self, y_pred, y_true):
         out = tf.nn.softmax_cross_entropy_with_logits(logits=y_pred, labels=y_true)
         return tf.reduce_mean(out)
 
     def evaluate(self, data):
         y_pred = self(data)
-        return self.accuracy({'y_pred': y_pred.argmax(-1), 
-                              'y': data['y'].argmax(-1)})
+        return {'{}_loss'.format(self.get_name()) : self.get_loss(data),
+                '{}_acc'.format(self.get_name()): self.accuracy({'y_pred': y_pred.argmax(-1), 
+                                                              'y': data['y'].argmax(-1)})}
 
 
 __MODEL__=Classifier

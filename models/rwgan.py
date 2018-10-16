@@ -29,7 +29,6 @@ from copy import deepcopy
 import numpy as np
 
 class RWGAN(WGAN):
-
     def __init__(self, hparams):
         if hparams != None:
             if 'namespace' not in hparams:
@@ -42,8 +41,7 @@ class RWGAN(WGAN):
 
         # Generator step
         d_input = tf.concat([self.generator.output, self.generator.a], -1)
-        # self.g_loss = tf.reduce_mean(self.discriminator.forward(d_input))
-        self.generator._loss = tf.reduce_mean(self.discriminator.forward(d_input))
+        self.generator.set_loss(tf.reduce_mean(self.discriminator.forward(d_input)))
 
         a_out = self.regressor.forward(self.generator.output, ret_all=True)[0]
         y_logit = self.classifier.forward(self.generator.output, ret_all=True)[1]['last_logit']
@@ -51,15 +49,14 @@ class RWGAN(WGAN):
         self.regularization = self.regressor.loss_function(a_out, self.generator.a)
         self.aux_loss = self.regularization * self.regressor.beta
         
-        self.generator._loss += self.aux_loss
-        self.generator._update = self.generator.update_step(self.generator._loss)
+        self.generator.add2loss(self.aux_loss)
 
         # Discriminator step
         self.d_real = tf.reduce_mean(self.discriminator.output)
         d_input_fake = tf.concat([self.generator.output, self.discriminator.a], -1)
         self.d_fake = tf.reduce_mean(self.discriminator.forward(d_input_fake))
 
-        self.discriminator._loss = self.cwgan_loss()
-        self.discriminator._update = self.discriminator.update_step(self.discriminator._loss)
+        self.discriminator.set_loss(self.cwgan_loss())
+
 
 __MODEL__=RWGAN

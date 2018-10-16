@@ -43,20 +43,18 @@ class CWGAN(WGAN):
 
         # Generator step
         d_input = tf.concat([self.generator.output, self.generator.a], -1)
-        self.generator._loss = tf.reduce_mean(self.discriminator.forward(d_input))
+        self.generator.set_loss(tf.reduce_mean(self.discriminator.forward(d_input)))
 
         y_logit = self.classifier.forward(self.generator.output, ret_all=True)[1]['last_logit']
         self.regularization = self.classifier.loss_function(y_logit, self.classifier.y)
         self.aux_loss = (self.classifier.beta * self.regularization)
-        
-        self.generator._loss += (self.classifier.beta * self.c_loss)
-        self.generator._update = self.generator.update_step(self.generator._loss)
 
         # Discriminator step
         self.d_real = tf.reduce_mean(self.discriminator.output)
         d_input_fake = tf.concat([self.generator.output, self.discriminator.a], -1)
         self.d_fake = tf.reduce_mean(self.discriminator.forward(d_input_fake))
 
-        self.d_loss = self.cwgan_loss()
+        self.generator.add2loss(self.aux_loss)
+        self.discriminator.set_loss(self.cwgan_loss())
 
 __MODEL__ = CWGAN

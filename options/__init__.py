@@ -6,3 +6,4 @@ __version__ = "1.0.3"
 __maintainer__ = "Rafael Felix"
 __email__ = "rafael.felixalves@adelaide.edu.au"
 __status__ = "production"
+__all__=["base", "gan", "generator", "models"]

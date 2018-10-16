@@ -23,7 +23,6 @@ SOFTWARE.
 """
 from .base import BaseModel
 import tensorflow as tf
-
 class Generator(BaseModel):
 
     def __init__(self, hparams=None):

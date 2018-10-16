@@ -34,31 +34,61 @@ class Regressor(BaseModel):
         self.loss_function  = self.mse_loss
     
     def mse_loss(self, a_pred, a_true):
-        self.weight_regularizer = 0.
-        for key, _layer in self.layers.items():
-            self.weight_regularizer += self.wdecay * tf.nn.l2_loss(_layer)
-        # self.weight_regularizer = self.wdecay * tf.nn.l2_loss(self.layers['r_fc1'])
-        return tf.reduce_mean(tf.squared_difference(a_pred, a_true) + self.weight_regularizer)
+        return tf.reduce_mean(tf.squared_difference(a_pred, a_true))
 
     def loss(self):
         return self.mse_loss(self.output, self.a)
 
-    def __build_specs__(self):
+    def __build_specs__(self, training=True):
         self.output = self.__forward__()
-        self._loss = self.loss()
-        self._update = self.update_step(self._loss)  
-        self.knn = tf.argmin(tf.reduce_sum(tf.abs(tf.subtract(self.a_dict, tf.expand_dims(self.a_pred,1))), 
-                                axis=2), 1)
+        self.output_test = self.__forward__(training=False)
+        self.distances = tf.reduce_sum(tf.abs(tf.subtract(self.a_dict, 
+                                                          tf.expand_dims(self.a_pred,1))), axis=2)
+        self.knn = tf.argmin(self.distances, 1)
+        
+        if self.contains('test'):
+            if 'mcmc_dropout' in self.test:
+                self.output_mcmc = self.__forward__()
+        if training:
+            self.set_loss(self.loss())
 
     def get_knn(self, a_pred, a_dict):
-        return self.sess.run([self.knn], feed_dict={self.a_pred: a_pred, self.a_dict: a_dict})
+        return self.sess.run([self.knn], 
+                             feed_dict={self.a_pred: a_pred, self.a_dict: a_dict})
+
+    def get_distances(self, data):
+        tdata = {'output':[self.distances], 
+                 'placeholder_batch':'a_pred',
+                 'placeholders':['a_pred']}
+        tdata.update(data)
+        return self.run(tdata)
+
+    def get_y_pred(self, a_pred, data):
+        import numpy as np
+        a_masked = np.ma.array(a_pred, mask=np.array([data['y_classes']] * a_pred.shape[0]))
+        if 'op' in data:
+            if data['op'] == 'min':
+                return a_masked.argmin(-1)
+            if data['op'] == 'max':
+                return a_masked.argmax(-1)
+        else:
+            return a_masked.argmin(-1)
 
     def evaluate(self, data):
         a_pred = self(data)
-        y_pred = self.get_knn(a_pred, data['dict'])[0]
-        return self.accuracy({'y_pred': y_pred,  'y': data['y'].argmax(-1)})
+        data['a_pred'] = a_pred
+        y_prob = self.get_distances(data)
+        
+        y_pred = self.get_y_pred(y_prob, data)
+        return {'{}_loss'.format(self.get_name()) : self.get_loss(data),
+                '{}_acc'.format(self.get_name()): self.accuracy({'y_pred': y_pred,  'y': data['y'].argmax(-1)})}
 
-
+    def predict(self, data):
+        from numpy import array
+        from util.metrics import softmax
+        _data = {'a_pred': self(data)}
+        _data.update(data)
+        return softmax(-self.get_distances(_data), -1)
 
 
 __MODEL__=Regressor

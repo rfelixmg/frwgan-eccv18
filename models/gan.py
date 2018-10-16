@@ -62,26 +62,30 @@ class GAN(ModelObject):
         hparams[_model]['namespace'] = '{}/{}'.format(self.namespace, _model)
         self.__dict__[_model] = self.get_basic_model(_model)(hparams[_model])
 
+    def set_writer(self, root):
+      super(GAN, self).set_writer(root)
+      for _model in self.__list_models__:
+        self.__dict__[_model].writer = self.writer
+
     def __build_in__(self):
       for _model in self.__list_models__:
         self.__dict__[_model].build()
 
     def __build_specs__(self):
         # Generator step
-        # self.g_loss = tf.reduce_mean(self.discriminator.forward(self.generator.output))
-        self.generator._loss = tf.reduce_mean(self.discriminator.forward(self.generator.output))
+        self.generator.set_loss(tf.reduce_mean(self.discriminator.forward(self.generator.output)))
 
         # Discriminator step
         self.d_real = tf.reduce_mean(self.discriminator.output)
         self.d_fake = tf.reduce_mean(self.discriminator.forward(self.generator.output))
-        self.discriminator._loss = self.wgan_loss()
+        self.discriminator.set_loss(self.wgan_loss())
 
-    def build(self):
+    def build(self, training=True):
         self.__build_in__()
         self.__build_specs__()
 
-        self.generator._update = self.generator.update_step(self.generator._loss)
-        self.discriminator._update = self.discriminator.update_step(self.discriminator._loss)
+        self.generator.set_update()
+        self.discriminator.set_update()
 
         self.sess.run(tf.local_variables_initializer())
         self.sess.run(tf.global_variables_initializer())
@@ -157,7 +161,6 @@ class GAN(ModelObject):
         d_loss, g_loss = np.array([]), np.array([])
         d_real, d_fake, d_grad = np.array([]), np.array([]), np.array([])
         for ii_, xcur, xsize in self.next_batch(data, batch_size):
-            
             gdata = {'a': data['a'][ii_], 
                      'z': self.get_noise(shape=data['a'][ii_].shape),
                      'y': data['y'][ii_]}
@@ -185,10 +188,14 @@ class GAN(ModelObject):
             self.printer(_msg)
         
 
-            _msg = '{} [{}/{}] g: {:.3g} | d: {:.3g} [resume]\n'.format(data['info'], xcur, xsize,
-                                                 g_loss.mean(), 
-                                                 d_loss.mean())
+        _msg = '{} [{}/{}] g: {:.3g} | d: {:.3g} [resume]\n'.format(data['info'], xcur, xsize,
+                                             g_loss.mean(), 
+                                             d_loss.mean())
         self.printer(_msg)
+        self.generator.one_step()
+        self.generator.params_tensorboard()
+        self.discriminator.one_step()
+        self.discriminator.params_tensorboard()
         return {'discriminator_loss': d_loss.mean(),
                 'discriminator_real': d_real.mean(),
                 'discriminator_fake': d_fake.mean(),

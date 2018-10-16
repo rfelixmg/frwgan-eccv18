@@ -1,0 +1,35 @@
+{"namespace":"classifier",
+ "x_dim": 2048,
+ "y_dim": 200,
+ "lmbda": 10,
+ "wdecay": 1e-4,
+ "epochs": 80,
+ "batch": 4096,
+ "y_dim": 200,
+ "beta":0.01,
+ "placeholder_input": ["x"],
+ "placeholder_input": ["x","y"],
+ "placeholders":[{"name": "x", "shape": [null, 2048], "dtype": "float32"},
+                {"name": "a", "shape": [null, 1024], "dtype": "float32"},
+                {"name": "y", "shape": [null, 200], "dtype": "float32"},
+                {"name": "y_pred", "shape": [null, 200], "dtype": "float32"},
+                {"name": "a_pred", "shape": [null, 1024], "dtype": "float32"},
+                {"name": "a_dict", "shape": [null, 1024], "dtype": "float32"},
+                {"name": "z", "shape": [null, 1024],   "dtype": "float32"}],
+ "placeholder_call": ["x"],
+ "architecture":
+     [{"name": "c_fc1", "initializer": {"name":"truncated", "params":{"stddev": 0.01 }}, "shape":[2048, 200]},
+      {"name": "c_bc1", "initializer": {"name":"constant", "params": {"value": 0.9999}}, "shape":[200]}],
+   
+   "operators": 
+     [{"op": "placeholder", "input":"x"},
+      {"op":"matmul", "input": "layers/c_fc1"},
+      {"op":"bias_add", "input": "layers/c_bc1"},
+      {"op": "activation", "type": "relu", "out": 1, "ref":"last_logit"},
+      {"op": "activation", "type": "softmax"}],
+   
+   "optimizer": 
+     {"name":"adam",
+      "lr": 1e-4,
+      "decay": 1e-3}
+}
