@@ -12,7 +12,7 @@ _EXP_BATCH_=batch_001
 # Saving in your home folder
 _BASE_=~/$_CONFERENCE_/$_DATABASE_/$_MODEL_TYPE_/$_EXP_BATCH_/
 
-_ARCHITECTURE_=./src/bash/$_CONFERENCE_/$_DATABASE_/architecture_$_TRAINABLE_.json
+_ARCHITECTURE_=./src/$_CONFERENCE_/$_DATABASE_/architecture_$_TRAINABLE_.json
 
 _GAN_REF_=<<< INSERT_HERE_FOLDER_GENERATED_BY_TRAIN_GAN >>>>>>
 
