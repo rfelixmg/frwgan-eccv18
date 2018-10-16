@@ -400,8 +400,9 @@ class BaseModel(ModelObject):
         optimizer_func = self.__get_optimizer__(self.optimizer['name'] if 'name' in self.optimizer else 'adam')
         self.__update_lr__()
 
-        with tf.control_dependencies(tf.get_collection(tf.GraphKeys.UPDATE_OPS)):
-            return optimizer_func(learning_rate=self.lr).minimize(loss, 
+        with tf.variable_scope(self.namespace):
+            with tf.control_dependencies(tf.get_collection(tf.GraphKeys.UPDATE_OPS)):
+                return optimizer_func(learning_rate=self.lr).minimize(loss, 
                                                                   var_list=trainables if trainables else self.trainable_variables(), 
                                                                   global_step=self.global_step,
                                                                   name='{}/optimizer'.format(self.namespace))
