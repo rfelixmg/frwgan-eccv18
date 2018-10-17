@@ -24,6 +24,8 @@ _BASE_FOLDER_=$_BASE_/benchmark
 mkdir --parents $_BASE_FOLDER_
 
 
+#Original dataset
+__DATA_FOLDER=None ###INSERT_HERE_YOUR_DATA_FOLDER###
 
 _DATADIR_=$_GAN_FOLDER_/source/data/
 _AUG_FILE_=$_DATADIR_/data.h5
@@ -33,5 +35,5 @@ _EVERY_=1
 _AUG_OP_=merge
 _DOMAIN_=openval
 
-python -m routines.benchmark --baseroot $_BASE_FOLDER_ --augm_file $_AUG_FILE_ --augm_operation $_AUG_OP_ --dbname $_DATABASE_ --architecture_file $_ARCHITECTURE_ --save_model $_SAVE_ --savepoints $_SAVEPOINTS_ --every $_EVERY_  --domain $_DOMAIN_
+python -m routines.benchmark --baseroot $_BASE_FOLDER_ --augm_file $_AUG_FILE_ --augm_operation $_AUG_OP_ --dbname $_DATABASE_ --architecture_file $_ARCHITECTURE_ --save_model $_SAVE_ --savepoints $_SAVEPOINTS_ --every $_EVERY_  --domain $_DOMAIN_ --dataroot $__DATA_FOLDER
 
