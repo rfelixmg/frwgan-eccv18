@@ -40,13 +40,13 @@ class WGAN(GAN):
 
     def cwgan_loss(self):
         alpha = tf.random_uniform(shape=tf.shape(self.generator.output), minval=0., maxval=1.)
-        interpolation = alpha * self.generator.output + (1. - alpha) * self.generator.output
+        interpolation = alpha * self.discriminator.x + (1. - alpha) * self.generator.output
         
         d_input = tf.concat([interpolation, self.generator.a], -1)
         grad = tf.gradients(self.discriminator.forward(d_input), [interpolation])[0]
         grad_norm = tf.norm(grad, axis=1, ord='euclidean')
         self.grad_pen = self.lmbda * tf.reduce_mean(tf.square(grad_norm - 1))
 
-        return self.d_real - (self.d_fake + self.aux_loss) + self.grad_pen
+        return self.d_real - self.d_fake + self.grad_pen
 
 __MODEL__=WGAN
