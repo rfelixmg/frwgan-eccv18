@@ -13,7 +13,7 @@
                 {"name": "a_dict", "shape": [null, 1024], "dtype": "float32"},
                 {"name": "z", "shape": [null, 1024],   "dtype": "float32"}],
 
-"gan":{"epochs":1000,
+"gan":{"epochs":3,
        "batch": 64,
        "c_beta": 0.01,
        "r_beta": 0.01},
@@ -62,7 +62,7 @@
 
 "classifier":{ "placeholder_input": ["x","y"],
                "placeholder_call": ["x"],
-               "epochs": 30,
+               "epochs": 3,
                "batch": 2048,
                "y_dim": 200,
                "beta":0.01,
@@ -84,7 +84,7 @@
 "regressor":{ "placeholder_input": ["x","a", "y"],
               "fix_variables": ["a_dict", "y_classes"],
               "placeholder_call": ["x"],
-               "epochs": 40,
+               "epochs": 4,
                "batch": 64,
                "x_dim":2048,
                "y_dim": 200,
@@ -102,7 +102,7 @@
 
                   "optimizer": 
                     {"name":"adam",
-                     "lr": 1e-4,
-                     "decay":1e-6}
+                     "lr": 9.9978e-5,
+                     "decay":8.75e-5}
                  }
 }

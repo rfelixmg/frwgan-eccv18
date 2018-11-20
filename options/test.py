@@ -33,7 +33,7 @@ class TestOptions(ModelsBase):
         self.parser.add_argument('-s', '--scores', type=str2strlist, default=False, help='Get ensemble scores')
         self.parser.add_argument('-d', '--dropout', type=str2bool, default=False, help='Test mcmc dropout')
         self.parser.add_argument('-o', '--output', type=str, default='/tmp/', help='Test mcmc dropout')
-
+        self.parser.add_argument('-rc', '--recycle_folder', type=str2bool, default=True, help='Recycle load_model path? ../../')
 
 __OPTION__=TestOptions
 

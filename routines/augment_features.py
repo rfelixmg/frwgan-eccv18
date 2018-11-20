@@ -68,7 +68,8 @@ def get_architecture(architecture_file):
     else:
         from util.files import list_directories
         _epochs = list_directories(architecture_file + '/', False)
-        _epochs.remove('last_epoch')
+        if 'last_epoch' in _epochs:
+            _epochs.remove('last_epoch')
         if len(_epochs) > 1:
             from numpy import sort
 
