@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Dataset root
-_DBDIR_=/var/scientific/data/eccv18/
+_DBDIR_=./data/
 # Model type
 _MODEL_TYPE_=cycle_wgan
 # GPU assign
@@ -13,13 +13,15 @@ _CONFERENCE_=sota
 _DATABASE_=cub
 
 # Set up of base folder for running GAN
-_BASE_FOLDER_=/var/scientific/experiments/$_CONFERENCE_/$_DATABASE_/$_MODEL_TYPE_/
+_BASE_FOLDER_=./experiments/$_CONFERENCE_/$_DATABASE_/$_MODEL_TYPE_/
 mkdir $_BASE_FOLDER_ --parents
 
 # Architecture file. Provided in the code
 _ARCHITECTURE_=./src/$_CONFERENCE_/$_DATABASE_/architecture/$_MODEL_TYPE_.json
 
 _TRAIN_GAN_=1
+
+#Note: the classifier is not used to train, only to evaluate the fake samples, as an stop criteria.
 _TRAIN_CLS_=1
 _TRAIN_REG_=1
 # Saving points for REG, CLS and GAN

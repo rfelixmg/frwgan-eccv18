@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Dataset root
-_DBDIR_=./data/eccv18/
+_DBDIR_=./data/
 # Model type
 _MODEL_TYPE_=cycle_wgan
 # Trainable architecture

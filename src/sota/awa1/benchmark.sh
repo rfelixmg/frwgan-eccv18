@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Dataset root
-_DBDIR_=/var/scientific/data/eccv18/
+_DBDIR_=./data/
 # Model type
 _MODEL_TYPE_=cycle_wgan
 # Trainable architecture
@@ -10,7 +10,7 @@ _TRAINABLE_=fullyconnected
 _GPU_DEV_="0"
 _GPU_MEM_=0.9
 _CONFERENCE_=sota
-_DATABASE_=sun
+_DATABASE_=awa1
 
 _BASE_=./experiments/$_CONFERENCE_/$_DATABASE_/$_MODEL_TYPE_/
 _ARCHITECTURE_=./src/$_CONFERENCE_/$_DATABASE_/architecture/$_TRAINABLE_.json

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Dataset root
-_DBDIR_=/var/scientific/data/eccv18/
+_DBDIR_=./data/
 # Model type
 _MODEL_TYPE_=cycle_wgan
 # Trainable architecture
@@ -12,7 +12,7 @@ _GPU_MEM_=0.9
 _CONFERENCE_=sota
 _DATABASE_=cub
 
-_BASE_=/var/scientific/experiments/$_CONFERENCE_/$_DATABASE_/$_MODEL_TYPE_/
+_BASE_=./experiments/$_CONFERENCE_/$_DATABASE_/$_MODEL_TYPE_/
 _ARCHITECTURE_=./src/$_CONFERENCE_/$_DATABASE_/architecture/$_TRAINABLE_.json
 _GAN_FOLDER_=$_BASE_/gan-model/
 

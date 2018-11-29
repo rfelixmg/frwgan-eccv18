@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-_DBDIR_=./data/eccv18/
+_DBDIR_=./data/
 _DATABASE_=cub
 _CONFERENCE_=sota
 _EPOCH_=epoch_80_80

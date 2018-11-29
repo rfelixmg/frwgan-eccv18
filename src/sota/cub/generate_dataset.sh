@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Dataset root
-_DBDIR_=/var/scientific/data/eccv18/
+_DBDIR_=./data/
 # Model type
 _MODEL_TYPE_=cycle_wgan
 
@@ -9,7 +9,7 @@ _GPU_MEM_=0.9
 _CONFERENCE_=sota
 _DATABASE_=cub
 
-_BASE_FOLDER_=/var/scientific/experiments/$_CONFERENCE_/$_DATABASE_/$_MODEL_TYPE_/
+_BASE_FOLDER_=./experiments/$_CONFERENCE_/$_DATABASE_/$_MODEL_TYPE_/
 _BASE_FOLDER_=$_BASE_FOLDER_/gan-model/
 
 #Architecture and checkpoint for generator
