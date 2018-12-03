@@ -6,4 +6,4 @@ __version__ = "1.0.1"
 __maintainer__ = "Rafael Felix"
 __email__ = "rafael.felixalves@adelaide.edu.au"
 __status__ = "production"
-__all__ = ["base", "classifier", "cwgan", "discriminators", "generators", "gan", "regressor", "rwgan", "wgan", "supporttypes"]
+__all__ = ["base", "classifier", "discriminators", "generators", "gan", "regressor", "rwgan", "wgan", "supporttypes"]
