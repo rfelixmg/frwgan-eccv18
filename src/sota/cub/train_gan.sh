@@ -25,7 +25,7 @@ _TRAIN_GAN_=1
 _TRAIN_CLS_=1
 _TRAIN_REG_=1
 # Saving points for REG, CLS and GAN
-_SAVE_POINTS_="[1,30,40,926]"
+_SAVE_POINTS_="[30,40,926]"
 # Saving option for every epoch 0 switch off
 _SAVE_=0
 
