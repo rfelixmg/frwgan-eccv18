@@ -26,7 +26,7 @@ _DATADIR_=$_GAN_FOLDER_/source/data/
 # Fake features H5file
 _AUG_FILE_=$_DATADIR_/data.h5
 
-_SAVEPOINTS_="[80]"
+_SAVEPOINTS_="[37]"
 _SAVE_=0
 # Every N epochs, perform evaluation on validation set
 _EVERY_=1
