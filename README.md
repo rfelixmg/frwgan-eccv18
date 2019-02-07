@@ -85,9 +85,9 @@ This dataset provides a platform to benchmark transfer-learning algorithms, in p
 
 ## Dataset in H5File
 
-In order to run our experiments, and facilitate visualization of the dataset, we introduce the GZSL datasets in H5file format. You can download the datasets CUB, SUN, FLO, and AWA1 in the h5file format, which can be downloaded [dataset.zip](https://drive.google.com/open?id=1N9K-w993Cv0zgZOkF3Rpls5qrfOMpQTj) (~5GB in zip file). Alternativelly, run the following bash lines:
+In order to run our experiments, and facilitate visualization of the dataset, we introduce the GZSL datasets in H5file format. You can download the datasets CUB, SUN, FLO, and AWA1 in the h5file format, which can be downloaded [dataset.zip](https://drive.google.com/open?id=1cJ-Hl5F9LOn4l-53vhu3-zfv0in2ahYI) (~3GB in zip file). Alternativelly, run the following bash lines:
 ```
-!wget https://drive.google.com/open?id=1N9K-w993Cv0zgZOkF3Rpls5qrfOMpQTj -O ./data/datasets.zip
+!wget https://drive.google.com/open?id=1cJ-Hl5F9LOn4l-53vhu3-zfv0in2ahYI -O ./data/datasets.zip
 unzip ./data/datasets.zip -d ./data/
 ```
 **HDF5 file:** The current code uses a HDF5 structure to organize the dataset. In order to facilitate the display of the dataset you might want to use HDFView 2.9 (for linux users)
@@ -104,6 +104,6 @@ cd frwgan-eccv18/
 git clone https://github.com/rfelixmg/util.git
 conda install requirements.txt
 
-wget https://drive.google.com/open?id=1N9K-w993Cv0zgZOkF3Rpls5qrfOMpQTj -O ./data/datasets.zip
+wget https://drive.google.com/open?id=1cJ-Hl5F9LOn4l-53vhu3-zfv0in2ahYI -O ./data/datasets.zip
 unzip ./data/datasets.zip -d ./data/
 ```
